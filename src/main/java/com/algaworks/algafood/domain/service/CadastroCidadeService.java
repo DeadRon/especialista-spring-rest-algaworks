@@ -1,31 +1,28 @@
 package com.algaworks.algafood.domain.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.stereotype.Service;
-
 import com.algaworks.algafood.domain.exception.EntidadeEmUsoException;
 import com.algaworks.algafood.domain.exception.EntidadeNaoEncontradaException;
 import com.algaworks.algafood.domain.model.Cidade;
 import com.algaworks.algafood.domain.model.Estado;
 import com.algaworks.algafood.domain.repository.CidadeRepository;
 import com.algaworks.algafood.domain.repository.EstadoRepository;
-
-import java.util.Optional;
-
-import static com.algaworks.algafood.domain.service.CadastroEstadoService.MSG_ESTADO_NAO_ENCONTRADO;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.stereotype.Service;
 
 @Service
 public class CadastroCidadeService {
 
 	public static final String MSG_CIDADE_NAO_ENCONTRADA = "Não existe cadastro de cidade com código %d";
-	public static final String MSG_CIDADE_NAO_PODE_SER_REMOVIDA = "Cidade de código %d não pode ser removida, pois está em uso";
+	public static final String MSG_CIDADE_EM_USO = "Cidade de código %d não pode ser removida, pois está em uso";
 	@Autowired
 	private CidadeRepository cidadeRepository;
 	
 	@Autowired
 	private EstadoRepository estadoRepository;
+
+	private CadastroEstadoService cadastroEstadoService;
 
 	public Cidade buscarOuFalhar(Long cidadeId){
 		return cidadeRepository.findById(cidadeId)
@@ -35,11 +32,7 @@ public class CadastroCidadeService {
 
 	public Cidade salvar(Cidade cidade) {
 		Long estadoId = cidade.getEstado().getId();
-
-		Estado estado = estadoRepository.findById(estadoId)
-			.orElseThrow(() -> new EntidadeNaoEncontradaException(
-					String.format(MSG_ESTADO_NAO_ENCONTRADO, estadoId)));
-		
+		Estado estado = cadastroEstadoService.buscarOuFalhar(cidade.getEstado().getId());
 		cidade.setEstado(estado);
 		
 		return cidadeRepository.save(cidade);
@@ -55,7 +48,7 @@ public class CadastroCidadeService {
 		
 		} catch (DataIntegrityViolationException e) {
 			throw new EntidadeEmUsoException(
-				String.format(MSG_CIDADE_NAO_PODE_SER_REMOVIDA, cidadeId));
+				String.format(MSG_CIDADE_EM_USO, cidadeId));
 		}
 	}
 
