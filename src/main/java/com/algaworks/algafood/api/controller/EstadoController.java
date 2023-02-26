@@ -40,13 +40,7 @@ public class EstadoController {
 	
 	@GetMapping("/{estadoId}")
 	public ResponseEntity<Estado> buscar(@PathVariable Long estadoId) {
-		Optional<Estado> estado = estadoRepository.findById(estadoId);
-		
-		if (estado.isPresent()) {
-			return ResponseEntity.ok(estado.get());
-		}
-		
-		return ResponseEntity.notFound().build();
+		return ResponseEntity.ok(cadastroEstado.buscarOuFalhar(estadoId));
 	}
 	
 	@PostMapping
@@ -62,7 +56,6 @@ public class EstadoController {
 		
 		if (estadoAtual != null) {
 			BeanUtils.copyProperties(estado, estadoAtual, "id");
-			
 			estadoAtual = cadastroEstado.salvar(estadoAtual);
 			return ResponseEntity.ok(estadoAtual);
 		}
@@ -72,17 +65,8 @@ public class EstadoController {
 	
 	@DeleteMapping("/{estadoId}")
 	public ResponseEntity<?> remover(@PathVariable Long estadoId) {
-		try {
-			cadastroEstado.excluir(estadoId);	
-			return ResponseEntity.noContent().build();
-			
-		} catch (EntidadeNaoEncontradaException e) {
-			return ResponseEntity.notFound().build();
-			
-		} catch (EntidadeEmUsoException e) {
-			return ResponseEntity.status(HttpStatus.CONFLICT)
-					.body(e.getMessage());
-		}
+		cadastroEstado.excluir(estadoId);
+		return ResponseEntity.noContent().build();
 	}
 	
 }
