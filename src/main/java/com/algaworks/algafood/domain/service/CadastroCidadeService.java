@@ -22,6 +22,7 @@ public class CadastroCidadeService {
 	@Autowired
 	private EstadoRepository estadoRepository;
 
+	@Autowired
 	private CadastroEstadoService cadastroEstadoService;
 
 	public Cidade buscarOuFalhar(Long cidadeId){

@@ -3,6 +3,7 @@ package com.algaworks.algafood.api.controller;
 import java.util.List;
 import java.util.Optional;
 
+import com.algaworks.algafood.domain.exception.NegocioException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -52,8 +53,13 @@ public class CidadeController {
 	public ResponseEntity<?> atualizar(@PathVariable Long cidadeId, @RequestBody Cidade cidade) {
 		Cidade cidadeAtual = cadastroCidade.buscarOuFalhar(cidadeId);
 		BeanUtils.copyProperties(cidade, cidadeAtual, "id");
-		cidadeAtual = cadastroCidade.salvar(cidadeAtual);
-		return ResponseEntity.ok(cidadeAtual);
+
+		try {
+			cidadeAtual = cadastroCidade.salvar(cidadeAtual);
+			return ResponseEntity.ok(cidadeAtual);
+		} catch (EntidadeNaoEncontradaException e){
+			throw new NegocioException(e.getMessage());
+		}
 	}
 	
 	@DeleteMapping("/{cidadeId}")
