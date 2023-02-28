@@ -6,15 +6,25 @@ import com.algaworks.algafood.domain.exception.NegocioException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import java.time.LocalDateTime;
-
 @ControllerAdvice
 public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
+
+    @Override
+    protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+
+        ProblemType problemType = ProblemType.MENSAGEM_INCOMPREENSIVEL;
+        String detail = "O corpo da requisição está inválido. Verifique erro de sintaxe";
+
+        Problem problem = createProblemBuilder(status, problemType, detail).build();
+
+        return handleExceptionInternal(ex, problem, headers, status, request);
+    }
 
     @ExceptionHandler(EntidadeNaoEncontradaException.class)
     public ResponseEntity<?> handleNegocioException(EntidadeNaoEncontradaException e, WebRequest webRequest){
@@ -44,7 +54,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity handleEntidadeNaoEncontradaException(NegocioException e, WebRequest webRequest){
 
         HttpStatus status = HttpStatus.CONFLICT;
-        ProblemType problemType = ProblemType.ENTIDADE_EM_USO;
+        ProblemType problemType = ProblemType.ERRO_NEGOCIO;
         String detail = e.getMessage();
 
         Problem problem = createProblemBuilder(status, problemType, detail).build();
@@ -74,8 +84,8 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         return Problem.builder()
                     .status(status.value())
                     .type(problemType.getUri())
-                    .title(problemType.getTitle())
-                ;
+                    .detail(detail)
+                    .title(problemType.getTitle());
     }
 
 }
