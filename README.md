@@ -12,3 +12,9 @@ to problems related to binding an individual property.
 - **UnrecognizedPropertyException**: Specialized JsonMappingException sub-class specifically used to indicate 
 problems due to encountering a JSON property that could not be mapped to an Object property (via getter, constructor argument or field).
 
+#### 8.25. Desafio: tratando exception de parâmetro de URL inválido
+
+- **MethodArgumentTypeMismatchException**: Exception that indicates that a method argument has not the expected type. 
+- ProblemType problem = ProblemType.PARAMETRO_INVALIDO;
+- Mensagem da respsosta HTTP: O parâmetro de URL '%s' recebeu o valor '%s', que é de um tipo inválido. Corrija e informa um valor
+comtaível com o tipo %s.
