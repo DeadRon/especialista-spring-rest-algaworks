@@ -34,3 +34,7 @@ to catch this method.
 - Create method handler to catch Exception
 - Message: Ocorreu um erro interno inesperado no sistema. Tente novamente e se o problema persistir
 entre em contato com o administrador do sistema.
+
+#### 8.29. Desafio: estendendo o formato do problema
+- Colocar nova propriedade timestamp para o problem details;
+- para todos os tratamentos de exceções retornar userMessage e timeStamp.
