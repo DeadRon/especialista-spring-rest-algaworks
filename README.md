@@ -18,3 +18,13 @@ problems due to encountering a JSON property that could not be mapped to an Obje
 - ProblemType problem = ProblemType.PARAMETRO_INVALIDO;
 - Mensagem da respsosta HTTP: O parâmetro de URL '%s' recebeu o valor '%s', que é de um tipo inválido. Corrija e informa um valor
 comtaível com o tipo %s.
+
+#### 8.26. Desafio: tratando a exceção NoHandlerFoundException  - to not found url
+
+- **NoHandlerFoundException**: By default, when the DispatcherServlet can't find a handler for a 
+request it sends a 404 response. However, if its property "throwExceptionIfNoHandlerFound" 
+is set to true this exception is raised and may be handled with a configured.
+- Its need configure spring to albe the throw this exception.
+- The method is present in ResponseEntityExceptionHandler super classe, just only overwrite this method
+and adapt your return to private method handleExceptionInternal. Don't need use the @ExceptionHandler
+to catch this method.
