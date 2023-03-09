@@ -25,6 +25,12 @@ comtaível com o tipo %s.
 request it sends a 404 response. However, if its property "throwExceptionIfNoHandlerFound" 
 is set to true this exception is raised and may be handled with a configured.
 - Its need configure spring to albe the throw this exception.
+HandlerExceptionResolver.
 - The method is present in ResponseEntityExceptionHandler super classe, just only overwrite this method
 and adapt your return to private method handleExceptionInternal. Don't need use the @ExceptionHandler
 to catch this method.
+
+#### 8.27. Desafio: tratando outras exceções não capturadas
+- Create method handler to catch Exception
+- Message: Ocorreu um erro interno inesperado no sistema. Tente novamente e se o problema persistir
+entre em contato com o administrador do sistema.
